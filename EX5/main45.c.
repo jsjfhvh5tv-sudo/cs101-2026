@@ -1,0 +1,46 @@
+#include <stdio.h>
+#define MAX_DISKS 3
+int pillars[3][MAX_DISKS] = {0};
+int top[3] = {-1, -1, -1};
+void init_pillars(int n) {
+    for (int i = n; i >= 1; i--) {
+        pillars[0][++top[0]] = i;
+    }
+}
+void print_pillars() {
+    for (int i = MAX_DISKS - 1; i >= 0; i--) {
+        for (int j = 0; j < 3; j++) {
+            if (pillars[j][i] != 0) {
+                printf("  [%d]  ", pillars[j][i]);
+            } else {
+                printf("   |   ");
+            }
+        }
+        printf("\n");
+    }
+    printf("  A      B      C  \n");
+    printf("-------------------\n");
+}
+void move_disk(int from, int to) {
+    int disk = pillars[from][top[from]--]; 
+    pillars[to][++top[to]] = disk;        
+    printf(">>> 將盤子 %d 從 %c 柱移動到 %c 柱\n", disk, 'A' + from, 'A' + to);
+    print_pillars(); 
+}
+void hanoi(int n, int from, int to, int aux) {
+    if (n == 1) {
+        move_disk(from, to);
+        return;
+    }
+    hanoi(n - 1, from, aux, to);
+    move_disk(from, to);
+    hanoi(n - 1, aux, to, from);
+}
+int main() {
+    int n = 3;
+    init_pillars(n);
+    printf("--- 初始狀態（3根柱子） ---\n");
+    print_pillars();
+    hanoi(n, 0, 2, 1);
+    return 0;
+}
